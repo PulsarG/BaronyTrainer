@@ -31,6 +31,8 @@ import (
 
 type Stats struct {
 	Name string `json:"name"`
+	LVL  int    `json:"LVL"`
+	GOLD int    `json:"GOLD"`
 }
 
 type Player struct {
@@ -73,6 +75,8 @@ func main() {
 			// Выводим имя из stats
 			if len(save.Players) > 0 {
 				fmt.Println("Имя персонажа:", save.Players[0].Stats.Name)
+				fmt.Println("Имя персонажа:", save.Players[0].Stats.LVL)
+				fmt.Println("Имя персонажа:", save.Players[0].Stats.GOLD)
 			} else {
 				fmt.Println("Нет игроков в JSON.")
 			}
