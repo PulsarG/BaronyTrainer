@@ -1,4 +1,4 @@
-// ** 0.01
+// ** 0.2
 
 // !!! Разбить на модули
 
@@ -48,7 +48,7 @@ func main() {
 	dataName := []string{}
 
 	// Читаем содержимое родительской папки
-FileHaler(inputPath, dataName)
+	FileHaler(inputPath, dataName)
 
 	// Создаём список
 	list := widget.NewList(
@@ -70,7 +70,7 @@ FileHaler(inputPath, dataName)
 	myWindow.ShowAndRun()
 }
 
-func FileHaler(inputPath string, dataName []string){
+func FileHaler(inputPath string, dataName []string) {
 	files, err := os.ReadDir(inputPath)
 	if err != nil {
 		log.Fatalf("Ошибка чтения директории: %v", err)
