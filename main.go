@@ -48,6 +48,29 @@ func main() {
 	dataName := []string{}
 
 	// Читаем содержимое родительской папки
+FileHaler(inputPath, dataName)
+
+	// Создаём список
+	list := widget.NewList(
+		func() int {
+			return len(dataName)
+		},
+		func() fyne.CanvasObject {
+			// Шаблон одного элемента списка
+			return widget.NewLabel("Текст")
+		},
+		func(i widget.ListItemID, o fyne.CanvasObject) {
+			// Отображение элемента по индексу
+			o.(*widget.Label).SetText(dataName[i])
+		},
+	)
+
+	myWindow.SetContent(container.NewMax(list))
+	myWindow.Resize(fyne.NewSize(500, 500))
+	myWindow.ShowAndRun()
+}
+
+func FileHaler(inputPath string, dataName []string){
 	files, err := os.ReadDir(inputPath)
 	if err != nil {
 		log.Fatalf("Ошибка чтения директории: %v", err)
@@ -83,23 +106,4 @@ func main() {
 			}
 		}
 	}
-
-	// Создаём список
-	list := widget.NewList(
-		func() int {
-			return len(dataName)
-		},
-		func() fyne.CanvasObject {
-			// Шаблон одного элемента списка
-			return widget.NewLabel("Текст")
-		},
-		func(i widget.ListItemID, o fyne.CanvasObject) {
-			// Отображение элемента по индексу
-			o.(*widget.Label).SetText(dataName[i])
-		},
-	)
-
-	myWindow.SetContent(container.NewMax(list))
-	myWindow.Resize(fyne.NewSize(500, 500))
-	myWindow.ShowAndRun()
 }
