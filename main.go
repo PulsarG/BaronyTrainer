@@ -10,16 +10,18 @@ import (
 	"log"
 	"os"
 	//"path/filepath"
+
+	//"path/filepath"
 	"encoding/json"
 	"strings"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
+
 	//"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	//"fyne.io/fyne/v2"
-
 	configini "github.com/PulsarG/ConfigManager"
 )
 
@@ -37,16 +39,16 @@ type SaveData struct {
 	Players []Player `json:"players"`
 }
 
+var isWin bool = false
+
 func main() {
 
 	//configini.SaveToIni("file", "link", "G:/Barony/savegames")
 	myApp := app.New()
 	myWindow := myApp.NewWindow("Barony Trainer")
 
-	inputPath := configini.GetFromIni("file", "link")
-
 	dataName := []string{}
-
+	inputPath := LinkFromSistem(isWin)
 	// Читаем содержимое родительской папки
 	FileHaler(inputPath, dataName)
 
@@ -71,6 +73,7 @@ func main() {
 }
 
 func FileHaler(inputPath string, dataName []string) {
+
 	files, err := os.ReadDir(inputPath)
 	if err != nil {
 		log.Fatalf("Ошибка чтения директории: %v", err)
@@ -106,4 +109,16 @@ func FileHaler(inputPath string, dataName []string) {
 			}
 		}
 	}
+}
+
+func LinkFromSistem(isWin bool) string {
+	var inputPath string
+	if isWin {
+		inputPath = configini.GetFromIni("file", "link")
+	} else {
+		inputPath, _ = os.Getwd()
+		// inputPath = filepath.Join(wd, "savegame0.baronysave")
+	}
+
+	return inputPath
 }
