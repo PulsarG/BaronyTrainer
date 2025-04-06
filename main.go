@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	//"path/filepath"
 
 	//"path/filepath"
@@ -39,7 +40,7 @@ type SaveData struct {
 	Players []Player `json:"players"`
 }
 
-var isWin bool = false
+var isWindows bool = false
 
 func main() {
 
@@ -48,12 +49,12 @@ func main() {
 	myWindow := myApp.NewWindow("Barony Trainer")
 
 	dataName := []string{}
-	inputPath := LinkFromSistem(isWin)
+	inputPath := LinkFromSistem(isWindows)
 	// Читаем содержимое родительской папки
-	FileHaler(inputPath, dataName)
+	FileHaler(inputPath, &dataName)
 
 	// Создаём список
-	list := widget.NewList(
+	/* list := widget.NewList(
 		func() int {
 			return len(dataName)
 		},
@@ -65,14 +66,39 @@ func main() {
 			// Отображение элемента по индексу
 			o.(*widget.Label).SetText(dataName[i])
 		},
-	)
+	) */
 
-	myWindow.SetContent(container.NewMax(list))
+	// Массив для хранения полей ввода
+	var entries []*widget.Entry
+
+	// Контейнер с вертикальной компоновкой
+	formContainer := container.NewVBox()
+
+	// Заполняем поля ввода значениями из слайса
+	for _, val := range dataName {
+		entry := widget.NewEntry()
+		entry.SetText(val)
+		entries = append(entries, entry)
+		formContainer.Add(entry)
+	}
+
+	// Кнопка для печати текущих значений в консоль
+	saveButton := widget.NewButton("Сохранить", func() {
+		for i, e := range entries {
+			println("Поле", i, ":", e.Text)
+		}
+	})
+
+	mainContent := container.NewVBox(formContainer, saveButton)
+
+	myWindow.SetContent(mainContent)
+
+	//myWindow.SetContent(container.NewMax(list))
 	myWindow.Resize(fyne.NewSize(500, 500))
 	myWindow.ShowAndRun()
 }
 
-func FileHaler(inputPath string, dataName []string) {
+func FileHaler(inputPath string, dataName *[]string) {
 
 	files, err := os.ReadDir(inputPath)
 	if err != nil {
@@ -100,7 +126,10 @@ func FileHaler(inputPath string, dataName []string) {
 
 			// Выводим имя из stats
 			if len(save.Players) > 0 {
-				dataName = append(dataName, save.Players[0].Stats.Name)
+				*dataName = append(*dataName, save.Players[0].Stats.Name)
+				*dataName = append(*dataName, strconv.Itoa(save.Players[0].Stats.LVL))
+				*dataName = append(*dataName, strconv.Itoa(save.Players[0].Stats.GOLD))
+
 				fmt.Println("Имя персонажа:", save.Players[0].Stats.Name)
 				fmt.Println("Имя персонажа:", save.Players[0].Stats.LVL)
 				fmt.Println("Имя персонажа:", save.Players[0].Stats.GOLD)
@@ -111,9 +140,9 @@ func FileHaler(inputPath string, dataName []string) {
 	}
 }
 
-func LinkFromSistem(isWin bool) string {
+func LinkFromSistem(isWindows bool) string {
 	var inputPath string
-	if isWin {
+	if isWindows {
 		inputPath = configini.GetFromIni("file", "link")
 	} else {
 		inputPath, _ = os.Getwd()
